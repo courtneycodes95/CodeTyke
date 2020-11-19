@@ -1,4 +1,5 @@
 @import '../../styles/utils/colors';
+@import "../../styles/utils/breakpoints";
 
 .selectionBox{
     position: relative;
@@ -9,8 +10,50 @@
     display: inline-block;
     border: solid 1px $elephant-paw;
     border-radius: 5px;
-    text-align: center;
+		text-align: center;
+		cursor: pointer;
+
+		&-selected {
+			background-color: $morning-sky;
+		}
+
+		@media only screen and (max-width: $mobile) {
+			display: flex;
+			flex-direction: column;
+		}
+
     &--image {display: block; width: inherit; padding-bottom: 8px;  }
-    &--text {font-size: 1em; font-weight: 600;}
-    input { position: absolute; left: 4px;}
+    &--text {
+			font-size: 1em; 
+			font-weight: 600;
+			@media only screen and (max-width: $mobile) {
+				align-self: flex-start;
+				margin-left: 20px;
+			}
+      &:before {
+				content: '';
+				position: absolute;
+				left: 4px;
+				top: 135px;
+				margin: 4px;
+				width: 9px;
+				height: 9px;
+				border-radius: 3px;
+				border: 2px solid $elephant-paw;
+				background-color: $elephant-paw;
+				opacity: 65%;
+			}
+		}
+    input { 
+			position: absolute;
+			opacity: 0;
+			height: 0;
+			width: 0;
+
+			&:checked ~ .selectionBox--text:before {
+				background-color: $morning-sky;
+				border-color: white;
+				opacity: 1;
+			}
+		}
   }

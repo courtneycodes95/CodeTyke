@@ -24,7 +24,21 @@ $size: 50px;
       width: 44px;
       display: inline-block;
     }
-  }
+	}
+
+	.arrowRight {
+		@media only screen and (max-width: $mobile) {
+			display: none;
+		}
+	}
+	
+	&.disabled {
+		background-color: lightgray;
+		
+		:hover {
+			cursor: default;
+		}
+	}
 
   //animation for loader
   .spinningLoader {
