@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import SelectionBox from '../selectionBox/SelectionBox';
 import Button from '../button/Button';
 import ProgressBar from '../progressBar/ProgressBar';
@@ -13,7 +13,7 @@ const LearningModule = ({setGameStatus}) => {
   const [quizData, setQuizData] = React.useState({});
   const [showLoader, setShowLoader] = React.useState(false);
   const [showModal, setShowModal] = React.useState(false);
-  const [userResponse, setUserResponse] = React.useState([])
+  const [userResponse, setUserResponse] = React.useState([]);
 
   let currentQuestion = quizData.questionArr ? quizData.questionArr[currentQuestionId]: {};
   React.useEffect(()=>{
@@ -29,14 +29,36 @@ const LearningModule = ({setGameStatus}) => {
       }).catch((err)=>{
         console.log(err);
       });
-  }
+	}
+	
+	const checkAnswers = () => {
+		let correctUserResponses = 0;
+		let incorrectUserResponses = 0;
+		for (const response of userResponse) {
+			if (response.answer.isCorrect) correctUserResponses++
+			else incorrectUserResponses++
+		}
+
+		if (correctUserResponses && !incorrectUserResponses) {
+			if (correctUserResponses < correctSolutions) {
+				console.log("Missing some correct answers");
+			} else if (correctUserResponses === correctSolutions) {
+				console.log("ALL responses are CORRECT :)");
+			}
+		} else if (correctUserResponses && incorrectUserResponses) {
+			console.log("Some are correct and some are incorrect")
+		} else {
+			console.log("Did not select any correct answers")
+		}
+	}
 
   const handleSubmit=()=> {
     if (userResponse.length) {
       if(currentQuestionId < quizData.totalQuestions-1){
         setShowLoader(true);
         setTimeout(function(){
-          console.log("Checking answer...");
+					console.log("Checking answer...");
+					checkAnswers();
           setCurrentQuestionId(currentQuestionId+1);
 					setShowLoader(false);
 				}, 500 );
@@ -47,8 +69,8 @@ const LearningModule = ({setGameStatus}) => {
 		}
 	}
 	
-	const handleUserChange = (selection, isChecked) => {
-		if (isChecked) {
+  const handleUserChange = (selection, isSelected) => {
+		if (isSelected) {
 			setUserResponse([...userResponse, possibleAnswers[selection].props])
 		} else {
 			let updatedResponse = userResponse.filter((answer) => answer.id !== selection)
@@ -56,11 +78,15 @@ const LearningModule = ({setGameStatus}) => {
 		}
 	}
 	
-  let possibleAnswers = [];
+	let possibleAnswers = [];
+	let correctSolutions = 0;
   if(currentQuestion.possibleAnswers){
     possibleAnswers = currentQuestion.possibleAnswers.map((answer, index) => {
       return <SelectionBox id={index} key={index} answer={answer} handleUserChange={handleUserChange} />
-    })
+		})
+		currentQuestion.possibleAnswers.forEach((option) => {
+			if (option.isCorrect) correctSolutions++;
+		})
   }
 
   const toggleAdditionalInfo = () => {
