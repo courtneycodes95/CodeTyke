@@ -99,7 +99,7 @@ const LearningModule = ({setGameStatus}) => {
 								showLoader={showLoader}
 								hasIcons
 								disabled={!userResponse.length}
-								showArrow={userResponse.length ? true : false}
+								showArrow={!showLoader}
 							/>
             </div>
           </div>
